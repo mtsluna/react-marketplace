@@ -10,7 +10,7 @@ const makeCards = (iterate)=>{
     return numbers.map(() => {
         return <div className="product">
             <div className="product-image">
-                <img className="product-image-fit" src="https://http2.mlstatic.com/D_NQ_NP_2X_673647-MLA44663818015_012021-F.webp%202x"/>
+                <img alt="Product image" className="product-image-fit" src="https://http2.mlstatic.com/D_NQ_NP_2X_673647-MLA44663818015_012021-F.webp%202x"/>
             </div>
             <div className="product-body">
                 <div>
