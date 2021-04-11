@@ -42,4 +42,5 @@ jobs:
           username: amdevcom
           password: B]@v59zN32XpLk
           server-dir: shop.amdev.com.ar/
+          local-dir: ./build/
           dangerous-clean-slate: true
