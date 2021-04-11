@@ -25,7 +25,7 @@ const makeCards = (iterate)=>{
                     </div>
                 </div>
                 <div className="product-shipping">
-                    Envío gratis
+                    10% OFF · Envío gratis
                 </div>
                 <div className="product-owner">
                     Vendido por mtsluna
