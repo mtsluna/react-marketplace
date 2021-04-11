@@ -38,9 +38,9 @@ jobs:
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
-          server: amdev.com.ar
-          username: amdevcom
-          password: B]@v59zN32XpLk
+          server: ${{secrets.FTP_ADDRESS}}
+          username: ${{secrets.FTP_USER}}
+          password: ${{secrets.FTP_PASSWORD}}
           server-dir: shop.amdev.com.ar/
           local-dir: ./build/
           dangerous-clean-slate: true
