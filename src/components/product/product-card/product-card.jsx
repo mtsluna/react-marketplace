@@ -1,6 +1,23 @@
 import "./product-card.css";
+import {useEffect, useState} from "react";
+import Button from "react-bootstrap/Button";
+import {Modal} from "react-bootstrap";
+import {MdDelete, MdEdit} from "react-icons/all";
 
-export function ProductCard() {
+export function ProductCard(props) {
+
+
+    const [user, setUser] = useState(null)
+    const [show, setShow] = useState(false)
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    useEffect(() => {
+        // Code to change user status
+        setUser(true)
+    }, [])
+
+
     return (
         <div className="product">
             <div className="product-image">
@@ -8,7 +25,7 @@ export function ProductCard() {
             </div>
             <div className="product-body">
                 <div>
-                    Motorola One Fusion 128GB azul océano 4 GB RAM
+                    <b> Motorola One Fusion 128GB azul océano 4 GB RAM</b>
                 </div>
                 <div className="product-price-area">
                     <div className="product-price-now">
@@ -24,6 +41,38 @@ export function ProductCard() {
                 <div className="product-owner">
                     Vendido por mtsluna
                 </div>
+                {
+                    user ?
+                        (
+                            <div className="actions">
+                                <Button variant="primary" size="sm" onClick={handleShow}>
+                                    <MdEdit/>
+                                </Button>{' '}
+                                <Button variant="danger" size="sm" onClick={() => props.onDelete(props.id)}>
+                                    <MdDelete/>
+                                </Button>
+                            </div>
+                        )
+                        :
+                        (
+                            <span></span>
+                        )
+
+                }
+                <Modal show={show} onHide={handleClose}>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Modal heading</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={handleClose}>
+                            Close
+                        </Button>
+                        <Button variant="primary" onClick={handleClose}>
+                            Save Changes
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
             {/*<div className="product-end">
                 <svg className="product-fav" viewBox="0 0 22 20"
