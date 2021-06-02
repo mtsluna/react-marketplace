@@ -21,6 +21,8 @@ const NavbarR = () => {
                     <Nav.Link href="/product">Product</Nav.Link>
                     <Nav.Link href="/product-view">Product view</Nav.Link>
                     <Nav.Link href="/shop-view">Shop view</Nav.Link>
+                    <Nav.Link href="/register">Register</Nav.Link>
+                    <Nav.Link href="/login">Login</Nav.Link>
                     </Nav>                    
                 </Navbar.Collapse>
             </Navbar> 

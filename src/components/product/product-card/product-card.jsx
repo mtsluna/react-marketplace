@@ -1,16 +1,48 @@
 import "./product-card.css";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
 import {MdDelete, MdEdit} from "react-icons/all";
+import {useForm} from "react-hook-form";
+import {forEach} from "react-bootstrap/ElementChildren";
 
 export function ProductCard(props) {
 
 
     const [user, setUser] = useState(null)
+    const [product, setProduct] = useState(null)
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+
+
+    const { register, errors, handleSubmit, setValue} = useForm();
+
+    const onSubmit = (data) => {
+
+        console.log(product);
+        //reset()
+        //handleClose()
+
+    }
+    const onEdit = (itemId) => {
+        const po = {
+            title: "Botella",
+            description: "Botellon",
+            price: 500,
+            discount: 0
+        }
+
+        console.log(product);
+        /*[ { name: 'title', value: 'Botellita de prueba' },
+            {name: "description", value: "Botellon"},
+            {name: "price", value: 50},
+            {name: "discount", value: 0}
+        ].forEach(({ name, value }) => setValue(name, value))*/
+
+
+        handleShow()
+    }
 
     useEffect(() => {
         // Code to change user status
@@ -45,7 +77,7 @@ export function ProductCard(props) {
                     user ?
                         (
                             <div className="actions">
-                                <Button variant="primary" size="sm" onClick={handleShow}>
+                                <Button variant="primary" size="sm" onClick={onEdit}>
                                     <MdEdit/>
                                 </Button>{' '}
                                 <Button variant="danger" size="sm" onClick={() => props.onDelete(props.id)}>
@@ -61,15 +93,65 @@ export function ProductCard(props) {
                 }
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
-                        <Modal.Title>Modal heading</Modal.Title>
+                        <Modal.Title>Editar producto</Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
+                    <Modal.Body>
+                        <form onSubmit={handleSubmit(onSubmit)}>
+                            <input
+                                placeholder="Nombre"
+                                className="form-control mb-2"
+                                name="title"
+                                {...register("title", {
+                                    required: "This is required."
+                                })}
+                            ></input>
+
+
+                            <input
+                                placeholder="Descripcion"
+                                className="form-control mb-2"
+                                name="description"
+                                {...register("description", {
+                                    required: {value:true, message: 'Ingrese una descripcion'},
+                                })}
+                            ></input>
+
+                            <input
+                                placeholder="Precio"
+                                type="number"
+                                className="form-control mb-2"
+                                name="precio"
+                                {...register("price", {
+                                    required: "Required",
+                                })}
+                            ></input>
+
+                            <input
+                                placeholder="Descuento"
+                                type="number"
+                                className="form-control mb-2"
+                                name="discount"
+                                {...register("discount", {
+                                    required: "Required",
+                                })}
+                            ></input>
+
+                            <input
+                                type="file"
+                                className="form-control mb-2"
+                                name="image_url"
+                                {...register( "image_url", {
+
+                                })}
+                            ></input>
+                        </form>
+                    </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>
-                            Close
+                            Cerrar
                         </Button>
-                        <Button variant="primary" onClick={handleClose}>
-                            Save Changes
+                        <Button variant="primary" onClick={handleSubmit(onSubmit)}>
+                            Guardar
                         </Button>
                     </Modal.Footer>
                 </Modal>
