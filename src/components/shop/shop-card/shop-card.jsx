@@ -3,16 +3,38 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import "./shop-card.css";
 
-const ShopCard = () => {
+const ShopCard = (props) => {
+
+    const store = props.store
+
     return (
             <Card style={{ width: '18rem' }}>
-                <Card.Img variant="top" src="https://latinoamerica-retail.com/wp-content/uploads/2019/11/2337/estaods-unidos-toys-r-us-is-back-heres-a-look-inside-its-first-new-store.jpg" />
+                <Card.Img className="store-image" variant="top" src={store.image_url} />
                 <Card.Body>
-                    <Card.Title>Tienda</Card.Title>
-                        <Card.Text>
-                        Some quick example text to build on the card title and make up the bulk of
-                        the card's content.
-                        </Card.Text>
+                    {
+                        store.name !== "" ?
+                            (
+                                <Card.Title>{store.name}</Card.Title>
+                            )
+                            :
+                            (
+                                <Card.Title>Sin nombre</Card.Title>
+                            )
+                    }
+                    {
+                        store.address !== "" ?
+                            (
+                                <Card.Text>
+                                    {store.address}
+                                </Card.Text>
+                            )
+                            :
+                            (
+                                <Card.Text>
+                                    No tiene dirección activa
+                                </Card.Text>
+                            )
+                    }
                     <Button variant="dark">Visitar tienda</Button>
                 </Card.Body>
             </Card>        

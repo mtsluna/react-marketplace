@@ -1,0 +1,14 @@
+.title{
+    margin: 10px 0px;
+    text-align: center;
+}
+.form-body{
+    padding: 5px 40px;
+}
+.form-input{
+    width: 75%;
+}
+.submit-button{
+    margin: 10px 0px;
+    width: 100%;
+}

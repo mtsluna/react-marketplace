@@ -19,8 +19,7 @@ export function ProductCard(props) {
     const { register, errors, handleSubmit, setValue} = useForm();
 
     const onSubmit = (data) => {
-
-        console.log(product);
+        console.log(data);
         //reset()
         //handleClose()
 
@@ -33,12 +32,11 @@ export function ProductCard(props) {
             discount: 0
         }
 
-        console.log(product);
-        /*[ { name: 'title', value: 'Botellita de prueba' },
-            {name: "description", value: "Botellon"},
-            {name: "price", value: 50},
-            {name: "discount", value: 0}
-        ].forEach(({ name, value }) => setValue(name, value))*/
+        [{ name: 'title', value: po.title },
+            {name: "description", value: po.description},
+            {name: "price", value: po.price},
+            {name: "discount", value: po.discount}
+        ].forEach(({ name, value }) => setValue(name, value))
 
 
         handleShow()
@@ -77,7 +75,7 @@ export function ProductCard(props) {
                     user ?
                         (
                             <div className="actions">
-                                <Button variant="primary" size="sm" onClick={onEdit}>
+                                <Button variant="primary" size="sm" onClick={() => onEdit()}>
                                     <MdEdit/>
                                 </Button>{' '}
                                 <Button variant="danger" size="sm" onClick={() => props.onDelete(props.id)}>

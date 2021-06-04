@@ -1,15 +1,19 @@
-import React, {Component} from 'react';
+import React, {Component, useState} from 'react';
 import {useForm} from "react-hook-form";
 import "./register.css";
 import Button from "react-bootstrap/Button";
 import {auth} from "../../firebaseconfig";
-import {postUser, getUsers} from "../../adapters/userAdapter";
+import {postUser} from "../../adapters/userAdapter";
+import {Alert} from "react-bootstrap";
+import {useHistory} from "react-router-dom";
 
 
 const Register = () => {
-
+    const history = useHistory()
     const {register, errors, handleSubmit, reset} = useForm();
+    const [msgError, setMsgError] = useState(null);
     const onSubmit = (data) => {
+        setMsgError(null)
         const user = {
             name: data.name,
             surname: data.surname,
@@ -18,34 +22,28 @@ const Register = () => {
             brand: data.brand
         }
         console.log(user);
-        /*auth.createUserWithEmailAndPassword(user.username,user.password).then(response => {
+        auth.createUserWithEmailAndPassword(user.username,user.password).then(async response => {
+            const data = await response.user;
             console.log(data)
-            postUser(user).then(response => {
+            postUser(data.uid, user).then(response => {
                 console.log("User created successfully")
+                reset()
+                history.push("home");
             }).catch(e => {
                 console.log(e);
             })
         }).catch(e => {
-            console.log(e)
-        })*/
-        getUsers().then(response => {
-            console.log(response.data)
-        }).catch(e => {
-            console.log(e)
+            if(e.code === "auth/weak-password") setMsgError("La contraseña debe tener mas de 5 caracteres");
+            if(e.code === "auth/email-already-in-use") setMsgError("Ese email ya ha sido registrado anteriormente");
+
         })
-        postUser(user).then(response => {
-            console.log("User created successfully")
-        }).catch(e => {
-            console.log(e);
-        })
-        //reset()
 
     }
 
     return (
         <div>
             <div className="container">
-                <div className="row justify-content-center">
+                <div className="row justify-content-center mt-5">
                     <div className="col-md-6">
                         <div className="card">
                             <div className="title">
@@ -104,6 +102,18 @@ const Register = () => {
                                 <Button className="submit-button" variant="dark" onClick={handleSubmit(onSubmit)} type="submit">
                                     Registrar
                                 </Button>
+                                {
+                                    msgError ?
+                                        (
+                                            <Alert variant="danger">
+                                                {msgError}
+                                            </Alert>
+                                        )
+                                        :
+                                        (
+                                            <span></span>
+                                        )
+                                }
                             </div>
                         </div>
                     </div>
