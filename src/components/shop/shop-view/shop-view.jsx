@@ -120,7 +120,7 @@ const ShopView = () => {
                 backgroundRepeat: 'no-repeat', backgroundPosition: 'center', margin: 0
             }}>
             </div>
-            <div style={{display:"flex", textAlign: "center", flexDirection: "column"}} className="jumbo-title">
+            <div style={{display: "flex", textAlign: "center", flexDirection: "column"}} className="jumbo-title">
                 <h3>
                     {
                         store ?
@@ -141,7 +141,8 @@ const ShopView = () => {
                 {
                     propietary ?
                         (
-                            <Button variant="success" size="sm" onClick={handleShow}>
+                            <Button style={{margin: "auto", width: "80%"}} variant="success" size="sm"
+                                    onClick={handleShow}>
                                 <BiPlusMedical/>
                             </Button>
                         )
@@ -153,7 +154,7 @@ const ShopView = () => {
 
 
                 {/*MODAL*/}
-                <Modal show={show} onHide={handleClose}>
+                <Modal size="xl" show={show} onHide={handleClose}>
                     <Modal.Header closeButton>
                         <Modal.Title>Añadir nuevo producto</Modal.Title>
                     </Modal.Header>
@@ -166,7 +167,7 @@ const ShopView = () => {
                                 {...register("title", {
                                     required: "This is required."
                                 })}
-                            ></input>
+                            />
 
 
                             <input
@@ -176,7 +177,7 @@ const ShopView = () => {
                                 {...register("description", {
                                     required: {value: true, message: 'Ingrese una descripcion'},
                                 })}
-                            ></input>
+                            />
 
                             <input
                                 placeholder="Precio"
@@ -186,7 +187,7 @@ const ShopView = () => {
                                 {...register("price", {
                                     required: "Required",
                                 })}
-                            ></input>
+                            />
 
                             <input
                                 placeholder="Descuento"
@@ -196,21 +197,21 @@ const ShopView = () => {
                                 {...register("discount", {
                                     required: "Required",
                                 })}
-                            ></input>
+                            />
 
                             <input
                                 type="file"
                                 className="form-control mb-2"
                                 name="image"
                                 {...register("image", {})}
-                            ></input>
+                            />
                         </form>
                     </Modal.Body>
                     <Modal.Footer>
-                        <Button variant="secondary" onClick={handleClose}>
+                        <Button variant="outline-danger" onClick={handleClose}>
                             Cerrar
                         </Button>
-                        <Button variant="primary" onClick={handleSubmit(onSubmit)} type="submit">
+                        <Button variant="outline-primary" onClick={handleSubmit(onSubmit)} type="submit">
                             Guardar
                         </Button>
                     </Modal.Footer>

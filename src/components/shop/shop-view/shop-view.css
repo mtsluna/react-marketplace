@@ -29,7 +29,10 @@
     padding: 10px 5px;
 }
 .new-product-bar Button{
-    margin-left: 30px;
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    margin: auto;
 }
 .place-image{
     align-items: center;

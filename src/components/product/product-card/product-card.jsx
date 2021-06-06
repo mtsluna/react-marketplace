@@ -18,74 +18,78 @@ export function ProductCard(props) {
     const handleShow = () => setShow(true);
 
 
-    const { register, errors, handleSubmit, setValue} = useForm();
+    const {register, errors, handleSubmit, setValue} = useForm();
 
     const onSubmit = (data) => {
-         const editedProduct = {
-             title: data.title,
-             description: data.description,
-             price: parseFloat(data.price),
-             discount: parseInt(data.discount),
-             image_url: product.image_url,
-             store_id: product.store_id
-         }
+        const editedProduct = {
+            title: data.title,
+            description: data.description,
+            price: parseFloat(data.price),
+            discount: parseInt(data.discount),
+            image_url: product.image_url,
+            store_id: product.store_id
+        }
 
-         if(data.image_url.length != 0){
-             const file = data.image_url[0]
-             let formData = new FormData();
-             formData.append("image", file)
-             uploadImage(formData).then(response => {
-                 editedProduct.image_url = response
+        if (data.image_url.length != 0) {
+            const file = data.image_url[0]
+            let formData = new FormData();
+            formData.append("image", file)
+            uploadImage(formData).then(response => {
+                editedProduct.image_url = response
 
-                 axios.put("http://localhost:8080/api/marketplace/products/"+product.id, editedProduct).then(response => {
-                     console.log("Product updated")
-                     props.onEdit()
-                     handleClose()
-                 }).catch(e => {console.log("Error updating product")})
-             }).catch(e => console.log(e))
-         }else{
-             axios.put("http://localhost:8080/api/marketplace/products/"+product.id, editedProduct).then(response => {
-                 console.log("Product updated")
-                 props.onEdit()
-                 handleClose()
-             }).catch(e => {console.log("Error updating product")})
-         }
+                axios.put("http://localhost:8080/api/marketplace/products/" + product.id, editedProduct).then(response => {
+                    console.log("Product updated")
+                    props.onEdit()
+                    handleClose()
+                }).catch(e => {
+                    console.log("Error updating product")
+                })
+            }).catch(e => console.log(e))
+        } else {
+            axios.put("http://localhost:8080/api/marketplace/products/" + product.id, editedProduct).then(response => {
+                console.log("Product updated")
+                props.onEdit()
+                handleClose()
+            }).catch(e => {
+                console.log("Error updating product")
+            })
+        }
 
-     }
+    }
     const onEdit = (productId) => {
-         getProductData(productId).then(response => {
-             setFormData(response)
-             setProduct(response)
-             handleShow()
-         })
-     }
+        getProductData(productId).then(response => {
+            setFormData(response)
+            setProduct(response)
+            handleShow()
+        })
+    }
 
 
     const getProductData = async (productId) => {
 
-         const { data } = await axios.get("http://localhost:8080/api/marketplace/products")
-         const productData = data.filter(product => product.id === productId)
+        const {data} = await axios.get("http://localhost:8080/api/marketplace/products")
+        const productData = data.filter(product => product.id === productId)
 
-         return productData[0]
-     }
+        return productData[0]
+    }
     const setFormData = (productData) => {
-         [{ name: 'title', value: productData.title},
-             {name: "description", value: productData.description},
-             {name: "price", value: productData.price},
-             {name: "discount", value: productData.discount}
-         ].forEach(({ name, value }) => setValue(name, value))
-         setProduct(productData)
-     }
-     // UPLOAD IMAGE
+        [{name: 'title', value: productData.title},
+            {name: "description", value: productData.description},
+            {name: "price", value: productData.price},
+            {name: "discount", value: productData.discount}
+        ].forEach(({name, value}) => setValue(name, value))
+        setProduct(productData)
+    }
+    // UPLOAD IMAGE
     const uploadImage = async (fileToUpload) => {
-         const data = await axios.post("http://localhost:8080/api/marketplace/images/upload",fileToUpload)
-         const image_url = data.data.url
-         return image_url;
-     }
+        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload", fileToUpload)
+        const image_url = data.data.url
+        return image_url;
+    }
 
     const redirectToStore = (productId) => {
         console.log("Redirecting ")
-        history.push("/product-view/"+productId)
+        history.push("/product-view/" + productId)
     }
     useEffect(() => {
         // Code to change user status
@@ -99,7 +103,7 @@ export function ProductCard(props) {
                 <img alt="Product" className="product-image-fit" src={props.product.image_url}/>
             </div>
             <div className="product-body">
-                <div onClick={() => redirectToStore(props.product.id)} >
+                <div onClick={() => redirectToStore(props.product.id)}>
                     <b className="product-body-title"> {props.product.title}</b>
                 </div>
 
@@ -107,32 +111,34 @@ export function ProductCard(props) {
                     props.product.discount > 0 ?
                         (
                             <div>
-                            <div className="product-price-area">
-                                <div className="product-price-now">
-                                    $ {Math.round(props.product.price *(1-(props.product.discount/100)))}
+                                <div className="product-price-area">
+                                    <div className="product-price-now">
+                                        $ {Math.round(props.product.price * (1 - (props.product.discount / 100)))}
+                                    </div>
+                                    <div className="product-price-before">
+                                        $ {props.product.price}
+                                    </div>
                                 </div>
-                                <div className="product-price-before">
-                                    $ {props.product.price}
+                                <div className="product-shipping">
+                                    {props.product.discount}% OFF · Envío gratis
                                 </div>
                             </div>
-                            <div className="product-shipping">
-                                {props.product.discount}% OFF · Envío gratis
-                            </div></div>
                         )
                         :
                         (
                             <div>
-                            <div className="product-price-area">
-                                <div className="product-price-now">
-                                $ {props.product.price}
-                                </div>
-                                <div className="product-price-before">
+                                <div className="product-price-area">
+                                    <div className="product-price-now">
+                                        $ {props.product.price}
+                                    </div>
+                                    <div className="product-price-before">
 
+                                    </div>
+                                </div>
+                                <div className="product-shipping">
+                                    Envío gratis
                                 </div>
                             </div>
-                            <div className="product-shipping">
-                                Envío gratis
-                            </div></div>
                         )
                 }
 
@@ -143,10 +149,12 @@ export function ProductCard(props) {
                     props.propietary ?
                         (
                             <div className="actions">
-                                <Button variant="primary" size="sm" onClick={() => onEdit(props.product.id)}>
+                                <Button style={{borderRadius: 0}} variant="outline-primary" size="sm"
+                                        onClick={() => onEdit(props.product.id)}>
                                     <MdEdit/>
                                 </Button>{' '}
-                                <Button variant="danger" size="sm" onClick={() => props.onDelete(props.product.id)}>
+                                <Button style={{borderRadius: 0}} variant="outline-danger" size="sm"
+                                        onClick={() => props.onDelete(props.product.id)}>
                                     <MdDelete/>
                                 </Button>
                             </div>
@@ -169,7 +177,7 @@ export function ProductCard(props) {
                                 {...register("title", {
                                     required: "This is required."
                                 })}
-                            ></input>
+                            />
 
 
                             <input
@@ -177,9 +185,9 @@ export function ProductCard(props) {
                                 className="form-control mb-2"
                                 name="description"
                                 {...register("description", {
-                                    required: {value:true, message: 'Ingrese una descripcion'},
+                                    required: {value: true, message: 'Ingrese una descripcion'},
                                 })}
-                            ></input>
+                            />
 
                             <input
                                 placeholder="Precio"
@@ -189,7 +197,7 @@ export function ProductCard(props) {
                                 {...register("price", {
                                     required: "Required",
                                 })}
-                            ></input>
+                            />
 
                             <input
                                 placeholder="Descuento"
@@ -199,22 +207,22 @@ export function ProductCard(props) {
                                 {...register("discount", {
                                     required: "Required",
                                 })}
-                            ></input>
+                            />
 
                             <input
                                 type="file"
                                 className="form-control mb-2"
                                 name="image_url"
-                                {...register( "image_url", {
-
-                                })}
-                            ></input>
+                                {...register("image_url", {})}
+                            />
                         </form>
                         {
                             product ?
                                 (
 
-                                    <img src={product.image_url} width="auto" height="100"/>
+                                    <img src={product.image_url} style={{
+                                        width: "100%"
+                                    }}/>
 
                                 )
                                 :
