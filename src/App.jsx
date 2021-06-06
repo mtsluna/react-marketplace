@@ -32,7 +32,6 @@ function App() {
                   <Route component={Home}/>
               </Switch>
           </div>
-          <Footer/>
       </Router>
   );
 }

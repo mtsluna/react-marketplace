@@ -6,7 +6,7 @@ import ShopCard from "../../shop/shop-card/shop-card";
 import {getStores} from "../../../adapters/storeAdapter";
 import {Spinner} from "react-bootstrap";
 
-export function Home(){
+export function Home() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
@@ -16,15 +16,15 @@ export function Home(){
         }).catch(e => {
             console.log("Error getting stores");
         })
-    },[])
+    }, [])
 
-    return (        
+    return (
         <React.Fragment>
             <Jumbotron fluid>
                 <Container>
-                    <h1>Nuevo Marketplace</h1>
+                    <h1>Shop Center</h1>
                     <p>
-                    Aquí podrás ver todas las nuevas tiendas y sus productos.
+                        Aquí podrás ver todas las nuevas tiendas y sus productos.
                     </p>
                 </Container>
             </Jumbotron>
@@ -33,7 +33,7 @@ export function Home(){
                     items.length !== 0 ?
                         (
                             <ul className="flex-container wrap">
-                                {items.map((item,index)=>{
+                                {items.map((item, index) => {
                                     return <li className="flex-item" key={index}><ShopCard store={item}/></li>
                                 })}
                             </ul>
@@ -41,7 +41,7 @@ export function Home(){
                         :
                         (
                             <div className="d-flex justify-content-center">
-                                <Spinner animation="border" variant="secondary" />
+                                <Spinner animation="border" variant="secondary"/>
                             </div>
                         )
                 }

@@ -10,40 +10,40 @@ const ShopCard = (props) => {
 
     const redirectToStore = (storeId) => {
         console.log("Redirecting ")
-        history.push("/shop-view/"+storeId)
+        history.push("/shop-view/" + storeId)
     }
 
     return (
-            <Card style={{ width: '18rem' }}>
-                <Card.Img className="store-image" variant="top" src={store.image_url} />
-                <Card.Body>
-                    {
-                        store.name !== "" ?
-                            (
-                                <Card.Title>{store.name}</Card.Title>
-                            )
-                            :
-                            (
-                                <Card.Title>Sin nombre</Card.Title>
-                            )
-                    }
-                    {
-                        store.address !== "" ?
-                            (
-                                <Card.Text>
-                                    {store.address}
-                                </Card.Text>
-                            )
-                            :
-                            (
-                                <Card.Text>
-                                    No tiene dirección activa
-                                </Card.Text>
-                            )
-                    }
-                    <Button variant="dark" onClick={() => {redirectToStore(store.id)}}>Visitar tienda</Button>
-                </Card.Body>
-            </Card>        
+        <Card style={{width: '18rem'}}>
+            <Card.Img className="store-image" variant="top" src={store.image_url}/>
+            <Card.Body>
+                {
+                    store.name !== "" ?
+                        (
+                            <Card.Title>{store.name}</Card.Title>
+                        )
+                        :
+                        (
+                            <Card.Title>Sin nombre</Card.Title>
+                        )
+                }
+                {
+                    store.address !== "" ?
+                        (
+                            <Card.Text className="subtitle">
+                                {store.address}
+                            </Card.Text>
+                        )
+                        :
+                        (
+                            <Card.Text className="subtitle"> No tiene dirección activa </Card.Text>
+                        )
+                }
+                <Button className="btn" variant="outline-dark" onClick={() => {
+                    redirectToStore(store.id)
+                }}>Visitar tienda</Button>
+            </Card.Body>
+        </Card>
     );
 }
 

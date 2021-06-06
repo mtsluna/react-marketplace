@@ -1,4 +1,14 @@
 .store-image{
     width: 200px;
     height: 200px;
+    object-fit: contain;
+}
+
+.btn {
+    width: 100%;
+}
+
+.subtitle {
+    color: #999999;
+    font-size: 14px;
 }
