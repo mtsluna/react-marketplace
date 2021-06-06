@@ -48,9 +48,6 @@ const NavbarR = () => {
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
                     <Nav className="mr-auto">
-                    <Nav.Link href="/product">Product</Nav.Link>
-                    <Nav.Link href="/product-view">Product view</Nav.Link>
-                    <Nav.Link href="/shop-view">Shop view</Nav.Link>
 
                     </Nav>
                     <Nav>
