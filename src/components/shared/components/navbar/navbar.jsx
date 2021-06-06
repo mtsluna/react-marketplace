@@ -23,6 +23,7 @@ const NavbarR = () => {
     }
     const myShopRedirect = () => {
         getStoreData().then(store => {
+            console.log(store)
             if(store !== undefined){
                 history.push("/shop-view/"+store.id)
             }else{
@@ -34,7 +35,7 @@ const NavbarR = () => {
 
     const getStoreData = async (storeId) => {
         const { data } = await axios.get("http://localhost:8080/api/marketplace/stores");
-        const newStore = data.filter(store => {return store.userId === user.uid})
+        const newStore = data.filter(store => {return store.user_id === user.uid})
         console.log(newStore)
         return newStore[0];
     }

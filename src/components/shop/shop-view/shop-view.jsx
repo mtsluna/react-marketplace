@@ -10,32 +10,45 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import {getStores} from "../../../adapters/storeAdapter";
 import axios from "axios";
+import {auth} from "../../../firebaseconfig";
 
 
 
 const ShopView = () => {
 
-    const [items,setItems] = useState([0,1,2,3]);
+    const [products,setProducts] = useState([]);
     const [store, setStore] = useState({})
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
     const { id } = useParams()
+    const [propietary, setPropietary] = useState(false);
     const { register, errors, handleSubmit, reset } = useForm();
 
    useEffect(() => {
-        getStoreData(id).then(response => {
-            setStore(response)
-            console.log(store)
-        })
+       auth.onAuthStateChanged(data => {
+           getStoreData(id).then(response => {
+               setStore(response)
+               if(data.uid === response.user_id){
+                   setPropietary(true)
+               }
+               getStoreProducts(id).then(response => {
+                   setProducts(response)
+               })
+           })
+       })
 
     }, []);
 
     const getStoreData = async (storeId) => {
         const { data } = await axios.get("http://localhost:8080/api/marketplace/stores");
         const newStore = data.filter(store => {return store.id === storeId})
-        console.log(newStore)
         return newStore[0];
+    }
+    const getStoreProducts = async (storeId) => {
+        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores")
+        const storeProductsArray = data.filter(product => {return product.store_id === storeId})
+        return storeProductsArray;
     }
     const onSubmit = (data) => {
         const product = {
@@ -52,16 +65,17 @@ const ShopView = () => {
 
     const handleDelete = (itemId) => {
         if (window.confirm('¿Deseas eliminar este producto?')) {
-            const itemsNew = items.filter(item => item !== itemId);
+            const itemsNew = products.filter(item => item !== itemId);
             console.log(itemsNew)
-            setItems( itemsNew );
+            setProducts( itemsNew );
         }
     }
 
     return (
         <div>
             <Jumbotron className="jumbo" fluid style={{height: '40vh',
-                backgroundImage: "url("+store.image_url+")", backgroundSize: "cover"}}>
+                backgroundImage: "url("+store.image_url+")", backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
                 <Container>
                     <div className="jumbo-title">
                         <h1>
@@ -83,9 +97,19 @@ const ShopView = () => {
                 </Container>
             </Jumbotron>
             <div className="new-product-bar">
-                <Button variant="success" size="sm" onClick={handleShow}>
-                    <BiPlusMedical/>
-                </Button>
+                {
+                    propietary ?
+                        (
+                            <Button variant="success" size="sm" onClick={handleShow}>
+                                <BiPlusMedical/>
+                            </Button>
+                        )
+                        :
+                        (
+                            <span></span>
+                        )
+                }
+
 
                 {/*MODAL*/}
                 <Modal show={show} onHide={handleClose}>
@@ -153,15 +177,27 @@ const ShopView = () => {
                     </Modal.Footer>
                 </Modal>
             </div>
-            <ul className="flex-container wrap">
+            <div className="products-place">
                 {
-                    items.map((item,index)=>{
-                    return <li className="flex-item" key={index}>
-                        <ProductCard id={item} onDelete={handleDelete}/>
-                    </li>
-                    })
+                    products.length > 0 ?
+                        (
+                            <ul className="flex-container wrap">
+                                {
+                                    products.map((item,index)=>{
+                                        return <li className="flex-item" key={index}>
+                                            <ProductCard id={item} propietary={propietary} onDelete={handleDelete}/>
+                                        </li>
+                                    })
+                                }
+                            </ul>
+                        )
+                        :
+                        (
+                            <div className="no-product"><h2>Esta tienda no ha publicado productos</h2></div>
+                        )
                 }
-            </ul>
+            </div>
+
         </div>
     );
 }

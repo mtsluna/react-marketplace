@@ -9,6 +9,7 @@ import axios from "axios";
 const Profile = () => {
 
     const [user, setUser] = useState({});
+    const [store, setStore] = useState({})
     const {register, errors, handleSubmit, reset, formState, setValue} = useForm({mode: 'onBlur'});
     const {
         register: register2,
@@ -32,10 +33,39 @@ const Profile = () => {
             reset(userData, {keepDirty: false, keepTouched: false})
         }).catch(e => console.log("Error updating user"))
     }
-    const onSubmitStore = (data) => {
-        console.log(data)
-    }
+    const onSubmitStore = async (storeData) => {
+        const storeAdd = {
+            address: storeData.address,
+            image_url: "",
+            name: storeData.name,
+            user_id: user.id
+        }
 
+        const file = storeData.image[0]
+        let formData = new FormData();
+        formData.append("image", file)
+
+        uploadImage(formData).then(response => {
+            storeAdd.image_url = response
+
+            axios.post("http://localhost:8080/api/marketplace/stores", storeAdd).then(response => {
+
+                console.log("Store created" + response)
+
+            }).catch(e => {console.log("Error creating store")})
+
+        }).catch(e => console.log(e))
+
+
+
+
+
+    }
+    const uploadImage = async (fileToUpload) => {
+        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload",fileToUpload)
+        const image_url = data.data.url
+        return image_url;
+    }
     useEffect(() => {
         auth.onAuthStateChanged(data => {
             const userId = data.uid;
@@ -43,6 +73,14 @@ const Profile = () => {
                 console.log(response)
                 setUser(response)
                 setProfileData(response)
+            })
+            getStoreData(userId).then(response => {
+                console.log(response)
+                if(response !== undefined){
+                    setStoreData(response)
+                    setStore(response)
+                }
+
             })
         })
     },[])
@@ -58,6 +96,19 @@ const Profile = () => {
             {name: "surname", value: userData.surname},
             {name: "username", value: userData.username}
             ].forEach(({ name, value }) => setValue(name, value))
+    }
+
+    const getStoreData = async (userId) => {
+        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores")
+        const newStore = data.filter(store => {return store.user_id === userId})
+        return newStore[0];
+    }
+    const setStoreData = async (storeData) => {
+
+            [{ name: 'address', value: storeData.address},
+             {name: 'name', value: storeData.name}
+            ].forEach(({ name, value }) => setValue2(name, value))
+
     }
 
         return (
@@ -108,14 +159,14 @@ const Profile = () => {
                 <div className="row mt-5 justify-content-center">
                     <div className="col-md-6">
                         <div className="profile-title">
-                            <h3>Mi tienda</h3>
+                            <h3>Mi tienda {store ? (""):("- No ha sido creada")}</h3>
                         </div>
                     </div>
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-md-6">
                         <div className="form-body">
-                            <form key={2} onSubmit={handleSubmit(onSubmitStore)}>
+                            <form onSubmit={handleSubmit(onSubmitStore)}>
                                 <input
                                     placeholder="Dirección"
                                     className="form-control mb-2 form-input"
@@ -135,14 +186,27 @@ const Profile = () => {
                                 <input
                                     type="file"
                                     className="form-control mb-2 form-input"
-                                    name="image_url"
-                                    {...register2( "image_url", {
-                                        required: "Required"
+                                    name="image"
+                                    {...register2( "image", {
+
                                     })}
                                 ></input>
                             </form>
+                            {
+                                store ?
+                                    (
+                                        <div className="place-image">
+                                            <img src={store.image_url} width="auto" height="200"/>
+                                        </div>
+                                    )
+                                    :
+                                    (
+                                        <span></span>
+                                    )
+                            }
+
                             <Button disabled={!formState2.isDirty && !formState2.isValid} className="submit-button"
-                                    variant="dark" onClick={handleSubmit(onSubmitStore)} type="submit">
+                                    variant="dark" onClick={handleSubmit2(onSubmitStore)} type="submit">
                                 Guardar Tienda
                             </Button>
                         </div>

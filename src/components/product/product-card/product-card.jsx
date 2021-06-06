@@ -2,7 +2,7 @@ import "./product-card.css";
 import React, {useEffect, useState} from "react";
 import Button from "react-bootstrap/Button";
 import {Modal} from "react-bootstrap";
-import {MdDelete, MdEdit} from "react-icons/all";
+import {BiPlusMedical, MdDelete, MdEdit} from "react-icons/all";
 import {useForm} from "react-hook-form";
 import {forEach} from "react-bootstrap/ElementChildren";
 
@@ -69,10 +69,10 @@ export function ProductCard(props) {
                     10% OFF · Envío gratis
                 </div>
                 <div className="product-owner">
-                    Vendido por mtsluna
+
                 </div>
                 {
-                    user ?
+                    props.propietary ?
                         (
                             <div className="actions">
                                 <Button variant="primary" size="sm" onClick={() => onEdit()}>
@@ -87,7 +87,6 @@ export function ProductCard(props) {
                         (
                             <span></span>
                         )
-
                 }
                 <Modal show={show} onHide={handleClose}>
                     <Modal.Header closeButton>

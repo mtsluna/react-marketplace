@@ -10,3 +10,7 @@ export function getStores() {
     const axios = returnAxiosInstance();
     return axios.get("/stores");
 }
+export function createNewStore(){
+    const axios = returnAxiosInstance();
+    return axios.post("/stores");
+}
