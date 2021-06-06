@@ -14,10 +14,11 @@
 .wrap    {
     -webkit-flex-wrap: wrap;
     flex-wrap: wrap;
+    width: 100%;
 }
 .flex-item {
     padding: 5px;
-    margin: 20px 5px;
+    margin: 0px 0px;
 }
 .jumbo-title{
     display: inline-block;

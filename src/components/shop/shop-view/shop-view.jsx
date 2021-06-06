@@ -6,48 +6,51 @@ import Button from "react-bootstrap/Button";
 import {ProductCard} from "../../product/product-card/product-card";
 import {BiPlusMedical} from "react-icons/all";
 import {Modal} from "react-bootstrap";
-import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import {useForm} from "react-hook-form";
+import {useParams} from "react-router-dom";
 import {getStores} from "../../../adapters/storeAdapter";
 import axios from "axios";
 import {auth} from "../../../firebaseconfig";
 
 
-
 const ShopView = () => {
 
-    const [products,setProducts] = useState([]);
+    const [products, setProducts] = useState([]);
     const [store, setStore] = useState({})
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-    const { id } = useParams()
+    const {id} = useParams()
     const [propietary, setPropietary] = useState(false);
-    const { register, errors, handleSubmit, reset } = useForm();
+    const {register, errors, handleSubmit, reset} = useForm();
 
-   useEffect(() => {
-       auth.onAuthStateChanged(data => {
-           getStoreData(id).then(response => {
-               setStore(response)
-               if(data.uid === response.user_id){
-                   setPropietary(true)
-               }
-               getStoreProducts(id).then(response => {
-                   setProducts(response)
-               })
-           })
-       })
+    useEffect(() => {
+        auth.onAuthStateChanged(data => {
+            getStoreData(id).then(response => {
+                setStore(response)
+                if (data && data.uid === response.user_id) {
+                    setPropietary(true)
+                }
+                getStoreProducts(id).then(response => {
+                    setProducts(response)
+                })
+            })
+        })
 
     }, []);
 
     const getStoreData = async (storeId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores");
-        const newStore = data.filter(store => {return store.id === storeId})
+        const {data} = await axios.get("http://localhost:8080/api/marketplace/stores");
+        const newStore = data.filter(store => {
+            return store.id === storeId
+        })
         return newStore[0];
     }
     const getStoreProducts = async (storeId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/products")
-        const storeProductsArray = data.filter(product => {return product.store_id === storeId})
+        const {data} = await axios.get("http://localhost:8080/api/marketplace/products")
+        const storeProductsArray = data.filter(product => {
+            return product.store_id === storeId
+        })
         return storeProductsArray;
     }
 
@@ -75,12 +78,13 @@ const ShopView = () => {
                 getStoreProducts(id).then(response => {
                     setProducts(response)
                 })
-                 reset()
-                 handleClose()
+                reset()
+                handleClose()
 
-            }).catch(e => {console.log("Error creating store")})
+            }).catch(e => {
+                console.log("Error creating store")
+            })
         }).catch(e => console.log(e))
-
 
 
     }
@@ -88,7 +92,7 @@ const ShopView = () => {
         getStoreProducts(id).then(response => setProducts(response))
     }
     const deleteProduct = async (productId) => {
-        const response = await axios.delete("http://localhost:8080/api/marketplace/products/"+productId)
+        const response = await axios.delete("http://localhost:8080/api/marketplace/products/" + productId)
         return response;
     }
     const handleDelete = (productId) => {
@@ -101,7 +105,7 @@ const ShopView = () => {
 
     // UPLOAD IMAGE
     const uploadImage = async (fileToUpload) => {
-        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload",fileToUpload)
+        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload", fileToUpload)
         const image_url = data.data.url
         return image_url;
     }
@@ -109,13 +113,16 @@ const ShopView = () => {
 
     return (
         <div>
-            <Jumbotron className="jumbo" fluid style={{height: '40vh',
-                backgroundImage: "url("+store.image_url+")", backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat', backgroundPosition: 'center'}}>
-                <Container>
-                    <div className="jumbo-title">
-                        <h1>
-                        {
+            <div style={{
+                height: '35vh',
+                objectFit: "cover",
+                backgroundImage: "url(" + store.image_url + ")", backgroundSize: 'contain',
+                backgroundRepeat: 'no-repeat', backgroundPosition: 'center', margin: 0
+            }}>
+            </div>
+            <div style={{display:"flex", textAlign: "center", flexDirection: "column"}} className="jumbo-title">
+                <h3>
+                    {
                         store ?
                             (
                                 store.name
@@ -124,14 +131,12 @@ const ShopView = () => {
                             (
                                 "Mi tienda"
                             )
-                        }
-                        </h1>
-                        <h5>
-                            {store.address}
-                        </h5>
-                    </div>
-                </Container>
-            </Jumbotron>
+                    }
+                </h3>
+                <h6 style={{color: "#999999"}}>
+                    {store.address}
+                </h6>
+            </div>
             <div className="new-product-bar">
                 {
                     propietary ?
@@ -169,7 +174,7 @@ const ShopView = () => {
                                 className="form-control mb-2"
                                 name="description"
                                 {...register("description", {
-                                    required: {value:true, message: 'Ingrese una descripcion'},
+                                    required: {value: true, message: 'Ingrese una descripcion'},
                                 })}
                             ></input>
 
@@ -197,8 +202,7 @@ const ShopView = () => {
                                 type="file"
                                 className="form-control mb-2"
                                 name="image"
-                                {...register( "image", {
-                                })}
+                                {...register("image", {})}
                             ></input>
                         </form>
                     </Modal.Body>
@@ -218,9 +222,10 @@ const ShopView = () => {
                         (
                             <ul className="flex-container wrap">
                                 {
-                                    products.map((item,index)=>{
+                                    products.map((item, index) => {
                                         return <li className="flex-item" key={index}>
-                                            <ProductCard product={item} propietary={propietary} onEdit={handleEdit} onDelete={handleDelete}/>
+                                            <ProductCard product={item} propietary={propietary} onEdit={handleEdit}
+                                                         onDelete={handleDelete}/>
                                         </li>
                                     })
                                 }

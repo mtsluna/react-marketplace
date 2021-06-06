@@ -43,14 +43,7 @@ const NavbarR = () => {
     return (
            <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
                 <Navbar.Brand href="/">
-                    <img
-                        alt=""
-                        src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/React.svg/1200px-React.svg.png"
-                        width="30"
-                        height="30"
-                        className="d-inline-block align-top"
-                    />{' '}
-                Marketplace
+                   ShopCenter
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
