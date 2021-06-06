@@ -2,10 +2,16 @@ import React from 'react'
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import "./shop-card.css";
+import {useHistory} from "react-router-dom";
 
 const ShopCard = (props) => {
-
+    const history = useHistory()
     const store = props.store
+
+    const redirectToStore = (storeId) => {
+        console.log("Redirecting ")
+        history.push("/shop-view/"+storeId)
+    }
 
     return (
             <Card style={{ width: '18rem' }}>
@@ -35,7 +41,7 @@ const ShopCard = (props) => {
                                 </Card.Text>
                             )
                     }
-                    <Button variant="dark">Visitar tienda</Button>
+                    <Button variant="dark" onClick={() => {redirectToStore(store.id)}}>Visitar tienda</Button>
                 </Card.Body>
             </Card>        
     );

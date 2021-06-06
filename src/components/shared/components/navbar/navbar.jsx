@@ -3,6 +3,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import {auth} from "../../../../firebaseconfig";
 import {useHistory} from "react-router-dom";
+import axios from "axios";
 
 const NavbarR = () => {
     const [user, setUser] = useState(null)
@@ -10,7 +11,7 @@ const NavbarR = () => {
     useEffect(() => {
         auth.onAuthStateChanged((user) => {
             if(user){
-                setUser(user.email)
+                setUser(user)
             }
         })
     },[])
@@ -20,7 +21,25 @@ const NavbarR = () => {
             history.push("/")
         }).catch(e => {console.log(e)})
     }
-    return (        
+    const myShopRedirect = () => {
+        getStoreData().then(store => {
+            if(store !== undefined){
+                history.push("/shop-view/"+store.id)
+            }else{
+                history.push("/profile")
+                alert("Debes colocar los datos de tu tienda en tu perfil, para poder crear productos y ver tu tienda")
+            }
+        })
+    }
+
+    const getStoreData = async (storeId) => {
+        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores");
+        const newStore = data.filter(store => {return store.userId === user.uid})
+        console.log(newStore)
+        return newStore[0];
+    }
+
+    return (
            <Navbar collapseOnSelect expand="md" bg="dark" variant="dark">
                 <Navbar.Brand href="/">
                     <img
@@ -61,7 +80,7 @@ const NavbarR = () => {
                             user ?
                                 (
                                     <Nav>
-                                        <Nav.Link href="/shop-view">Mi tienda</Nav.Link>
+                                        <Nav.Link onClick={() => myShopRedirect()}>Mi tienda</Nav.Link>
                                         <Nav.Link href="/profile">Perfil</Nav.Link>
                                         <Nav.Link onClick={() => logout()}>Cerrar sesion</Nav.Link>
                                     </Nav>

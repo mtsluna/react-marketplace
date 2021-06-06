@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import React, {useEffect, useState} from 'react';
 import ShopCard from "../../shop/shop-card/shop-card";
 import {getStores} from "../../../adapters/storeAdapter";
+import {Spinner} from "react-bootstrap";
 
 export function Home(){
     const [items, setItems] = useState([]);
@@ -27,11 +28,25 @@ export function Home(){
                     </p>
                 </Container>
             </Jumbotron>
-            <ul className="flex-container wrap">
-                {items.map((item,index)=>{
-                  return <li className="flex-item" key={index}><ShopCard store={item}></ShopCard></li>
-                })}
-            </ul>
+            <div className="stores-place">
+                {
+                    items.length !== 0 ?
+                        (
+                            <ul className="flex-container wrap">
+                                {items.map((item,index)=>{
+                                    return <li className="flex-item" key={index}><ShopCard store={item}/></li>
+                                })}
+                            </ul>
+                        )
+                        :
+                        (
+                            <div className="d-flex justify-content-center">
+                                <Spinner animation="border" variant="secondary" />
+                            </div>
+                        )
+                }
+            </div>
+
         </React.Fragment>
     )
 }

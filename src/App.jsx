@@ -24,7 +24,7 @@ function App() {
               <Switch>
                   <Route exact path="/product" component={ProductCard}/>
                   <Route exact path="/product-view" component={ProductDescription}/>
-                  <Route exact path="/shop-view" component={ShopView}/>
+                  <Route exact path="/shop-view/:id" component={ShopView}/>
                   <Route exact path="/register" component={Register}/>
                   <Route exact path="/login" component={Login}/>
                   <Route exact path="/profile" component={Profile}/>

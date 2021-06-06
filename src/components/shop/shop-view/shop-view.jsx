@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import './shop-view.css';
 import Container from "react-bootstrap/Container";
 import Jumbotron from "react-bootstrap/Jumbotron";
@@ -7,17 +7,36 @@ import {ProductCard} from "../../product/product-card/product-card";
 import {BiPlusMedical} from "react-icons/all";
 import {Modal} from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useParams } from "react-router-dom";
+import {getStores} from "../../../adapters/storeAdapter";
+import axios from "axios";
 
 
 
 const ShopView = () => {
 
     const [items,setItems] = useState([0,1,2,3]);
+    const [store, setStore] = useState({})
     const [show, setShow] = useState(false)
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
-
+    const { id } = useParams()
     const { register, errors, handleSubmit, reset } = useForm();
+
+   useEffect(() => {
+        getStoreData(id).then(response => {
+            setStore(response)
+            console.log(store)
+        })
+
+    }, []);
+
+    const getStoreData = async (storeId) => {
+        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores");
+        const newStore = data.filter(store => {return store.id === storeId})
+        console.log(newStore)
+        return newStore[0];
+    }
     const onSubmit = (data) => {
         const product = {
             title: data.title,
@@ -41,13 +60,24 @@ const ShopView = () => {
 
     return (
         <div>
-            <Jumbotron fluid style={{height: '50vh',
-                backgroundImage: `url(https://media4.s-nbcnews.com/i/newscms/2017_26/2053956/170627-better-grocery-store-main-se-539p_80a9ba9c8d466788799ca27568ee0d43.jpg)`, backgroundSize: 'cover' }}>
+            <Jumbotron className="jumbo" fluid style={{height: '40vh',
+                backgroundImage: "url("+store.image_url+")", backgroundSize: "cover"}}>
                 <Container>
-                    <div className="title">
-                        <h1>Mi tienda</h1>
+                    <div className="jumbo-title">
+                        <h1>
+                        {
+                        store ?
+                            (
+                                store.name
+                            )
+                            :
+                            (
+                                "Mi tienda"
+                            )
+                        }
+                        </h1>
                         <h5>
-                            Te presento mis productos
+                            {store.address}
                         </h5>
                     </div>
                 </Container>

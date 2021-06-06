@@ -1,10 +1,9 @@
 import React, {Component, useEffect, useState} from 'react';
 import "./profile.css";
-import {useForm} from "react-hook-form";
+import {set, useForm} from "react-hook-form";
 import Button from "react-bootstrap/Button";
 import {auth} from "../../firebaseconfig";
-import {getUserById} from "../../adapters/userAdapter";
-import async from "async";
+import {getUserById, updateUserById} from "../../adapters/userAdapter";
 import axios from "axios";
 
 const Profile = () => {
@@ -20,37 +19,46 @@ const Profile = () => {
         setValue: setValue2} = useForm();
 
     const onSubmitProfile = (data) => {
-        const user = {
+        const userData = {
             name: data.name,
-            surname: data.surname
+            surname: data.surname,
+            username: user.username,
+            id: user.id,
+            brand: user.brand
         }
-        console.log(user);
+        setUser(userData)
+        updateUserById(user.id, userData).then(response => {
+            console.log("User updated");
+            reset(userData, {keepDirty: false, keepTouched: false})
+        }).catch(e => console.log("Error updating user"))
     }
     const onSubmitStore = (data) => {
         console.log(data)
-    }
-    const getUserData = async (userId) => {
-        const response = await axios.get("http://localhost:8080/api/marketplace/users/"+userId)
-        console.log(response.data)
-        setUser(response.data)
-    }
-    const setProfileData = async () => {
-        console.log(user)
-        [{ name: 'name', value: user.name},
-            {name: "surname", value: user.surname},
-            {name: "email", value: user.username}
-        ].forEach(({ name, value }) => setValue(name, value))
     }
 
     useEffect(() => {
         auth.onAuthStateChanged(data => {
             const userId = data.uid;
-
+            getUserData(userId).then(response => {
+                console.log(response)
+                setUser(response)
+                setProfileData(response)
+            })
         })
-
     },[])
 
+    const getUserData = async (userId) => {
+        const { data } = await axios.get("http://localhost:8080/api/marketplace/users")
+        const newUser = data.filter(user => {return user.id === userId})
+        return newUser[0];
+    }
 
+    const setProfileData = async (userData) => {
+            [{ name: 'name', value: userData.name},
+            {name: "surname", value: userData.surname},
+            {name: "username", value: userData.username}
+            ].forEach(({ name, value }) => setValue(name, value))
+    }
 
         return (
             <div className="container">
@@ -85,8 +93,8 @@ const Profile = () => {
                                     readOnly
                                     placeholder="Correo Electronico"
                                     className="form-control mb-2 form-input"
-                                    name="email"
-                                    {...register("email", {
+                                    name="username"
+                                    {...register("username", {
                                         required: "This is required."
                                     })}
                                 ></input>
@@ -133,7 +141,7 @@ const Profile = () => {
                                     })}
                                 ></input>
                             </form>
-                            <Button disabled={!formState.isDirty && !formState.isValid} className="submit-button"
+                            <Button disabled={!formState2.isDirty && !formState2.isValid} className="submit-button"
                                     variant="dark" onClick={handleSubmit(onSubmitStore)} type="submit">
                                 Guardar Tienda
                             </Button>
