@@ -79,6 +79,8 @@ const Profile = () => {
                 if(response !== undefined){
                     setStoreData(response)
                     setStore(response)
+                }else{
+                    setStore(null)
                 }
 
             })
@@ -193,7 +195,7 @@ const Profile = () => {
                                 ></input>
                             </form>
                             {
-                                store ?
+                                store != null ?
                                     (
                                         <div className="place-image">
                                             <img src={store.image_url} width="auto" height="200"/>
