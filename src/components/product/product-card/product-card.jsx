@@ -5,10 +5,12 @@ import {Modal} from "react-bootstrap";
 import {BiPlusMedical, MdDelete, MdEdit} from "react-icons/all";
 import {useForm} from "react-hook-form";
 import {forEach} from "react-bootstrap/ElementChildren";
+import axios from "axios";
+import {useHistory} from "react-router-dom";
 
 export function ProductCard(props) {
 
-
+    const history = useHistory()
     const [user, setUser] = useState(null)
     const [product, setProduct] = useState(null)
     const [show, setShow] = useState(false)
@@ -19,29 +21,72 @@ export function ProductCard(props) {
     const { register, errors, handleSubmit, setValue} = useForm();
 
     const onSubmit = (data) => {
-        console.log(data);
-        //reset()
-        //handleClose()
+         const editedProduct = {
+             title: data.title,
+             description: data.description,
+             price: parseFloat(data.price),
+             discount: parseInt(data.discount),
+             image_url: product.image_url,
+             store_id: product.store_id
+         }
 
+         if(data.image_url.length != 0){
+             const file = data.image_url[0]
+             let formData = new FormData();
+             formData.append("image", file)
+             uploadImage(formData).then(response => {
+                 editedProduct.image_url = response
+
+                 axios.put("http://localhost:8080/api/marketplace/products/"+product.id, editedProduct).then(response => {
+                     console.log("Product updated")
+                     props.onEdit()
+                     handleClose()
+                 }).catch(e => {console.log("Error updating product")})
+             }).catch(e => console.log(e))
+         }else{
+             axios.put("http://localhost:8080/api/marketplace/products/"+product.id, editedProduct).then(response => {
+                 console.log("Product updated")
+                 props.onEdit()
+                 handleClose()
+             }).catch(e => {console.log("Error updating product")})
+         }
+
+     }
+    const onEdit = (productId) => {
+         getProductData(productId).then(response => {
+             setFormData(response)
+             setProduct(response)
+             handleShow()
+         })
+     }
+
+
+    const getProductData = async (productId) => {
+
+         const { data } = await axios.get("http://localhost:8080/api/marketplace/products")
+         const productData = data.filter(product => product.id === productId)
+
+         return productData[0]
+     }
+    const setFormData = (productData) => {
+         [{ name: 'title', value: productData.title},
+             {name: "description", value: productData.description},
+             {name: "price", value: productData.price},
+             {name: "discount", value: productData.discount}
+         ].forEach(({ name, value }) => setValue(name, value))
+         setProduct(productData)
+     }
+     // UPLOAD IMAGE
+    const uploadImage = async (fileToUpload) => {
+         const data = await axios.post("http://localhost:8080/api/marketplace/images/upload",fileToUpload)
+         const image_url = data.data.url
+         return image_url;
+     }
+
+    const redirectToStore = (productId) => {
+        console.log("Redirecting ")
+        history.push("/product-view/"+productId)
     }
-    const onEdit = (itemId) => {
-        const po = {
-            title: "Botella",
-            description: "Botellon",
-            price: 500,
-            discount: 0
-        }
-
-        [{ name: 'title', value: po.title },
-            {name: "description", value: po.description},
-            {name: "price", value: po.price},
-            {name: "discount", value: po.discount}
-        ].forEach(({ name, value }) => setValue(name, value))
-
-
-        handleShow()
-    }
-
     useEffect(() => {
         // Code to change user status
         setUser(true)
@@ -50,24 +95,47 @@ export function ProductCard(props) {
 
     return (
         <div className="product">
-            <div className="product-image">
-                <img alt="Product" className="product-image-fit" src="https://http2.mlstatic.com/D_NQ_NP_2X_673647-MLA44663818015_012021-F.webp%202x"/>
+            <div className="product-image" onClick={() => redirectToStore(props.product.id)}>
+                <img alt="Product" className="product-image-fit" src={props.product.image_url}/>
             </div>
             <div className="product-body">
-                <div>
-                    <b> Motorola One Fusion 128GB azul océano 4 GB RAM</b>
+                <div onClick={() => redirectToStore(props.product.id)} >
+                    <b className="product-body-title"> {props.product.title}</b>
                 </div>
-                <div className="product-price-area">
-                    <div className="product-price-now">
-                        $ 120.999
-                    </div>
-                    <div className="product-price-before">
-                        $ 139.999
-                    </div>
-                </div>
-                <div className="product-shipping">
-                    10% OFF · Envío gratis
-                </div>
+
+                {
+                    props.product.discount > 0 ?
+                        (
+                            <div>
+                            <div className="product-price-area">
+                                <div className="product-price-now">
+                                    $ {Math.round(props.product.price *(1-(props.product.discount/100)))}
+                                </div>
+                                <div className="product-price-before">
+                                    $ {props.product.price}
+                                </div>
+                            </div>
+                            <div className="product-shipping">
+                                {props.product.discount}% OFF · Envío gratis
+                            </div></div>
+                        )
+                        :
+                        (
+                            <div>
+                            <div className="product-price-area">
+                                <div className="product-price-now">
+                                $ {props.product.price}
+                                </div>
+                                <div className="product-price-before">
+
+                                </div>
+                            </div>
+                            <div className="product-shipping">
+                                Envío gratis
+                            </div></div>
+                        )
+                }
+
                 <div className="product-owner">
 
                 </div>
@@ -75,10 +143,10 @@ export function ProductCard(props) {
                     props.propietary ?
                         (
                             <div className="actions">
-                                <Button variant="primary" size="sm" onClick={() => onEdit()}>
+                                <Button variant="primary" size="sm" onClick={() => onEdit(props.product.id)}>
                                     <MdEdit/>
                                 </Button>{' '}
-                                <Button variant="danger" size="sm" onClick={() => props.onDelete(props.id)}>
+                                <Button variant="danger" size="sm" onClick={() => props.onDelete(props.product.id)}>
                                     <MdDelete/>
                                 </Button>
                             </div>
@@ -142,6 +210,18 @@ export function ProductCard(props) {
                                 })}
                             ></input>
                         </form>
+                        {
+                            product ?
+                                (
+
+                                    <img src={product.image_url} width="auto" height="100"/>
+
+                                )
+                                :
+                                (
+                                    <span></span>
+                                )
+                        }
                     </Modal.Body>
                     <Modal.Footer>
                         <Button variant="secondary" onClick={handleClose}>

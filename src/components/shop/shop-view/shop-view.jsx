@@ -46,30 +46,66 @@ const ShopView = () => {
         return newStore[0];
     }
     const getStoreProducts = async (storeId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores")
+        const { data } = await axios.get("http://localhost:8080/api/marketplace/products")
         const storeProductsArray = data.filter(product => {return product.store_id === storeId})
         return storeProductsArray;
     }
+
     const onSubmit = (data) => {
         const product = {
             title: data.title,
             description: data.description,
-            price: data.price,
-            discount: data.discount
+            price: parseFloat(data.price),
+            discount: parseInt(data.discount),
+            image_url: "",
+            store_id: id
         }
-        console.log(product);
-        reset()
-        handleClose()
+
+        const file = data.image[0]
+        let formData = new FormData();
+        formData.append("image", file)
+
+
+        uploadImage(formData).then(response => {
+            product.image_url = response
+
+            axios.post("http://localhost:8080/api/marketplace/products", product).then(response => {
+
+                console.log("Product created")
+                getStoreProducts(id).then(response => {
+                    setProducts(response)
+                })
+                 reset()
+                 handleClose()
+
+            }).catch(e => {console.log("Error creating store")})
+        }).catch(e => console.log(e))
+
+
 
     }
-
-    const handleDelete = (itemId) => {
+    const handleEdit = () => {
+        getStoreProducts(id).then(response => setProducts(response))
+    }
+    const deleteProduct = async (productId) => {
+        const response = await axios.delete("http://localhost:8080/api/marketplace/products/"+productId)
+        return response;
+    }
+    const handleDelete = (productId) => {
         if (window.confirm('¿Deseas eliminar este producto?')) {
-            const itemsNew = products.filter(item => item !== itemId);
-            console.log(itemsNew)
-            setProducts( itemsNew );
+            deleteProduct(productId).then(response => {
+                getStoreProducts(id).then(response => setProducts(response))
+            })
         }
     }
+
+    // UPLOAD IMAGE
+    const uploadImage = async (fileToUpload) => {
+        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload",fileToUpload)
+        const image_url = data.data.url
+        return image_url;
+    }
+
 
     return (
         <div>
@@ -141,7 +177,7 @@ const ShopView = () => {
                                 placeholder="Precio"
                                 type="number"
                                 className="form-control mb-2"
-                                name="precio"
+                                name="price"
                                 {...register("price", {
                                     required: "Required",
                                 })}
@@ -160,9 +196,8 @@ const ShopView = () => {
                             <input
                                 type="file"
                                 className="form-control mb-2"
-                                name="image_url"
-                                {...register( "image_url", {
-                                    required: "Required"
+                                name="image"
+                                {...register( "image", {
                                 })}
                             ></input>
                         </form>
@@ -185,7 +220,7 @@ const ShopView = () => {
                                 {
                                     products.map((item,index)=>{
                                         return <li className="flex-item" key={index}>
-                                            <ProductCard id={item} propietary={propietary} onDelete={handleDelete}/>
+                                            <ProductCard product={item} propietary={propietary} onEdit={handleEdit} onDelete={handleDelete}/>
                                         </li>
                                     })
                                 }
