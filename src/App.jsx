@@ -23,7 +23,7 @@ function App() {
           <div className="content">
               <Switch>
                   <Route exact path="/product" component={ProductCard}/>
-                  <Route exact path="/product-view" component={ProductDescription}/>
+                  <Route exact path="/product-view/:id" component={ProductDescription}/>
                   <Route exact path="/shop-view/:id" component={ShopView}/>
                   <Route exact path="/register" component={Register}/>
                   <Route exact path="/login" component={Login}/>
