@@ -10,7 +10,6 @@ import { Home } from "./components/shared/home/home";
 import Navbar from "./components/shared/components/navbar/navbar";
 import React from 'react';
 import ShopView from "./components/shop/shop-view/shop-view";
-import Footer from "./components/shared/components/footer/footer";
 import Register from "./components/register/register";
 import Login from "./components/login/login";
 import Profile from "./components/profile/profile";

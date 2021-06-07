@@ -37,7 +37,7 @@ export function ProductCard(props) {
             uploadImage(formData).then(response => {
                 editedProduct.image_url = response
 
-                axios.put("http://localhost:8080/api/marketplace/products/" + product.id, editedProduct).then(response => {
+                axios.put("https://secret-everglades-98943.herokuapp.com/api/marketplace/products/" + product.id, editedProduct).then(response => {
                     console.log("Product updated")
                     props.onEdit()
                     handleClose()
@@ -46,7 +46,7 @@ export function ProductCard(props) {
                 })
             }).catch(e => console.log(e))
         } else {
-            axios.put("http://localhost:8080/api/marketplace/products/" + product.id, editedProduct).then(response => {
+            axios.put("https://secret-everglades-98943.herokuapp.com/api/marketplace/products/" + product.id, editedProduct).then(response => {
                 console.log("Product updated")
                 props.onEdit()
                 handleClose()
@@ -67,7 +67,7 @@ export function ProductCard(props) {
 
     const getProductData = async (productId) => {
 
-        const {data} = await axios.get("http://localhost:8080/api/marketplace/products")
+        const {data} = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/products")
         const productData = data.filter(product => product.id === productId)
 
         return productData[0]
@@ -82,7 +82,7 @@ export function ProductCard(props) {
     }
     // UPLOAD IMAGE
     const uploadImage = async (fileToUpload) => {
-        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload", fileToUpload)
+        const data = await axios.post("https://secret-everglades-98943.herokuapp.com/api/marketplace/images/upload", fileToUpload)
         const image_url = data.data.url
         return image_url;
     }

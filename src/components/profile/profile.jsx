@@ -48,7 +48,7 @@ const Profile = () => {
         uploadImage(formData).then(response => {
             storeAdd.image_url = response
 
-            axios.post("http://localhost:8080/api/marketplace/stores", storeAdd).then(response => {
+            axios.post("https://secret-everglades-98943.herokuapp.com/api/marketplace/stores", storeAdd).then(response => {
 
                 console.log("Store created" + response)
 
@@ -62,7 +62,7 @@ const Profile = () => {
 
     }
     const uploadImage = async (fileToUpload) => {
-        const data = await axios.post("http://localhost:8080/api/marketplace/images/upload",fileToUpload)
+        const data = await axios.post("https://secret-everglades-98943.herokuapp.com/api/marketplace/images/upload",fileToUpload)
         const image_url = data.data.url
         return image_url;
     }
@@ -88,7 +88,7 @@ const Profile = () => {
     },[])
 
     const getUserData = async (userId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/users")
+        const { data } = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/users")
         const newUser = data.filter(user => {return user.id === userId})
         return newUser[0];
     }
@@ -101,7 +101,7 @@ const Profile = () => {
     }
 
     const getStoreData = async (userId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores")
+        const { data } = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/stores")
         const newStore = data.filter(store => {return store.user_id === userId})
         return newStore[0];
     }

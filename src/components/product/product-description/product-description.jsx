@@ -9,7 +9,7 @@ export function ProductDescription(){
     const [product, setProduct] = useState({})
     const { id } = useParams()
     const getProductData = async (productId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/products");
+        const { data } = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/products");
         const newProduct = data.filter(product => {return product.id === productId})
         return newProduct[0];
     }

@@ -3,7 +3,7 @@ import axios from "axios";
 
 function returnAxiosInstance() {
     return axios.create({
-        baseURL: "http://localhost:8080/api/marketplace"
+        baseURL: "https://secret-everglades-98943.herokuapp.com/api/marketplace"
     });
 }
 export function postProduct(storeId, requestData) {

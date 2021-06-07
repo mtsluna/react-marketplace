@@ -34,7 +34,7 @@ const NavbarR = () => {
     }
 
     const getStoreData = async (storeId) => {
-        const { data } = await axios.get("http://localhost:8080/api/marketplace/stores");
+        const { data } = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/stores");
         const newStore = data.filter(store => {return store.user_id === user.uid})
         console.log(newStore)
         return newStore[0];

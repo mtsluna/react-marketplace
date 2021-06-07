@@ -40,14 +40,14 @@ const ShopView = () => {
     }, []);
 
     const getStoreData = async (storeId) => {
-        const {data} = await axios.get("http://localhost:8080/api/marketplace/stores");
+        const {data} = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/stores");
         const newStore = data.filter(store => {
             return store.id === storeId
         })
         return newStore[0];
     }
     const getStoreProducts = async (storeId) => {
-        const {data} = await axios.get("http://localhost:8080/api/marketplace/products")
+        const {data} = await axios.get("https://secret-everglades-98943.herokuapp.com/api/marketplace/products")
         const storeProductsArray = data.filter(product => {
             return product.store_id === storeId
         })
@@ -72,7 +72,7 @@ const ShopView = () => {
         uploadImage(formData).then(response => {
             product.image_url = response
 
-            axios.post("http://localhost:8080/api/marketplace/products", product).then(response => {
+            axios.post("https://secret-everglades-98943.herokuapp.com/api/marketplace/products", product).then(response => {
 
                 console.log("Product created")
                 getStoreProducts(id).then(response => {
